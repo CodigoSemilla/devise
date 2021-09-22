@@ -313,13 +313,16 @@ module Devise
     end
 
     def get
-      ActiveSupport::Dependencies.constantize(@name)
+      # Prevents an issue with Rails 7.alpha
+      @name.constantize
     end
   end
 
   def self.ref(arg)
     # Prevents an issue with Rails 7.alpha
-    # ActiveSupport::Dependencies.reference(arg)
+    if ActiveSupport::Dependencies.respond_to?(:reference)
+      ActiveSupport::Dependencies.reference(arg)
+    end
     Getter.new(arg)
   end
 
